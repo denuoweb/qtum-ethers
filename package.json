@@ -22,19 +22,19 @@
     "varuint-bitcoin": "1.1.0",
     "wif": "^2.0.6"
   },
-  "name": "qtum-ethers-wrapper",
+  "name": "htmlcoin-ethers-wrapper",
   "version": "0.1.5",
   "main": "./build/main/index.js",
   "license": "",
-  "homepage": "https://github.com/earlgreytech/qtum-ethers",
+  "homepage": "https://github.com/htmlcoin/htmlcoin-ethers",
   "repository": {
       "type": "git",
-      "url": "git@github.com:earlgreytech/qtum-ethers"
+      "url": "git@github.com:htmlcoin/htmlcoin-ethers"
   },
   "keywords": [
     "Ethereum",
     "ethers",
-    "QTUM"
+    "HTMLCOIN"
   ],
   "scripts": {
     "build": "yarn build:main && yarn build:module",
