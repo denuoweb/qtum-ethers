@@ -1,13 +1,13 @@
 declare const BigNumber: any;
 declare const expect: any;
 declare const ethers: any;
-declare const QtumWallet: any;
-declare const QtumProvider: any;
-declare const QtumContractFactory: any;
+declare const HtmlcoinWallet: any;
+declare const HtmlcoinProvider: any;
+declare const HtmlcoinContractFactory: any;
 declare const generateContractAddress: any;
 declare const provider: any;
 declare const signer: any;
-declare const signerNoQtum: any;
+declare const signerNoHtmlcoin: any;
 declare const ADOPTION_ABI: ({
     inputs: {
         internalType: string;
