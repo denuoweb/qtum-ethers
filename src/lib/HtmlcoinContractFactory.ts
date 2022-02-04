@@ -60,7 +60,7 @@ async function resolveAddresses(resolver: Signer | Provider, value: any, paramTy
 
     return value;
 }
-export class QtumContractFactory extends ContractFactory {
+export class HtmlcoinContractFactory extends ContractFactory {
     constructor(contractInterface: ContractInterface, bytecode: BytesLike | { object: string }, signer?: Signer) {
         super(contractInterface, bytecode, signer);
     }
