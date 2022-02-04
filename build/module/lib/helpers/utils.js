@@ -277,7 +277,7 @@ export function addContractVouts(gasPrice, gasLimit, data, address, amounts, val
         });
         return vouts;
     }
-    // call qtum_getUTXOs to see if the account has enough to spend with the networkFee and some (for adding more inputs, it costs $$$!) taken into account
+    // call htmlcoin_getUTXOs to see if the account has enough to spend with the networkFee and some (for adding more inputs, it costs $$$!) taken into account
     else if (new BigNumber(returnAmount).isLessThan(new BigNumber(gas).plus(networkFee).plus(value))) {
         return new BigNumber(networkFee).plus(0.0019400).toFixed(7);
     }
@@ -300,7 +300,7 @@ export function addp2pkhVouts(hash160Address, amounts, value, hash160PubKey, vin
         });
         return vouts;
     }
-    // call qtum_getUTXOs to see if the account has enough to spend with the networkFee and some (for adding more inputs, it costs $$$!) taken into account
+    // call htmlcoin_getUTXOs to see if the account has enough to spend with the networkFee and some (for adding more inputs, it costs $$$!) taken into account
     else if (new BigNumber(returnAmount).isLessThan(new BigNumber(networkFee).plus(networkFee).plus(value))) {
         return new BigNumber(networkFee).plus(0.0019400).toFixed(7);
     }
@@ -318,7 +318,7 @@ export function parseSignedTransaction(transaction) {
         gasPrice: BigNumberEthers.from("0x28"),
         data: "",
         value: BigNumberEthers.from("0x0"),
-        chainId: 81,
+        chainId: 4444,
     };
     // Set hash (double sha256 of raw TX string)
     const sha256HashFirst = sha256().update(transaction, "hex").digest("hex");
@@ -394,56 +394,56 @@ function dropPrecisionLessThanOneSatoshi(wei) {
     return inWeiStringDroppedPrecision;
 }
 export async function serializeTransactionWith(utxos, neededAmount, tx, transactionType, signer, publicKey) {
-    // Building the QTUM tx that will eventually be serialized.
-    let qtumTx = { version: 2, locktime: 0, vins: [], vouts: [] };
+    // Building the HTMLCOIN tx that will eventually be serialized.
+    let htmlcoinTx = { version: 2, locktime: 0, vins: [], vouts: [] };
     // @ts-ignore
     const [vins, amounts] = addVins(utxos, neededAmount, tx.from.split("0x")[1]);
     // reduce precision in gasPrice to 1 satoshi
     tx.gasPrice = dropPrecisionLessThanOneSatoshi(BigNumberEthers.from(tx.gasPrice).toString());
-    qtumTx.vins = vins;
+    htmlcoinTx.vins = vins;
     if (transactionType !== 3) {
         if (transactionType === 2) {
             // @ts-ignore
-            let localVouts = addContractVouts(BigNumberEthers.from(tx.gasPrice).toNumber(), BigNumberEthers.from(tx.gasLimit).toNumber(), tx.data, "", amounts, new BigNumber(BigNumberEthers.from("0x0").toNumber() + `e-8`).toFixed(7), tx.from.split("0x")[1], qtumTx.vins);
+            let localVouts = addContractVouts(BigNumberEthers.from(tx.gasPrice).toNumber(), BigNumberEthers.from(tx.gasLimit).toNumber(), tx.data, "", amounts, new BigNumber(BigNumberEthers.from("0x0").toNumber() + `e-8`).toFixed(7), tx.from.split("0x")[1], htmlcoinTx.vins);
             if (typeof localVouts === 'string') {
                 return { serializedTransaction: "", networkFee: localVouts };
             }
-            qtumTx.vouts = localVouts;
+            htmlcoinTx.vouts = localVouts;
         }
         else {
             // @ts-ignore
-            let localVouts = addContractVouts(BigNumberEthers.from(tx.gasPrice).toNumber(), BigNumberEthers.from(tx.gasLimit).toNumber(), tx.data, tx.to, amounts, !!tx.value === true ? new BigNumber(BigNumberEthers.from(tx.value).toNumber() + `e-8`).toNumber() : new BigNumber(BigNumberEthers.from("0x0").toNumber() + `e-8`).toFixed(7), tx.from.split("0x")[1], qtumTx.vins);
+            let localVouts = addContractVouts(BigNumberEthers.from(tx.gasPrice).toNumber(), BigNumberEthers.from(tx.gasLimit).toNumber(), tx.data, tx.to, amounts, !!tx.value === true ? new BigNumber(BigNumberEthers.from(tx.value).toNumber() + `e-8`).toNumber() : new BigNumber(BigNumberEthers.from("0x0").toNumber() + `e-8`).toFixed(7), tx.from.split("0x")[1], htmlcoinTx.vins);
             if (typeof localVouts === 'string') {
                 return { serializedTransaction: "", networkFee: localVouts };
             }
-            qtumTx.vouts = localVouts;
+            htmlcoinTx.vouts = localVouts;
         }
         // Sign necessary vins
         const updatedVins = [];
-        for (let i = 0; i < qtumTx.vins.length; i++) {
-            updatedVins.push({ ...qtumTx.vins[i], ['scriptSig']: p2pkhScriptSig(await signp2pkhWith(qtumTx, i, signer), publicKey.split("0x")[1]) });
+        for (let i = 0; i < htmlcoinTx.vins.length; i++) {
+            updatedVins.push({ ...htmlcoinTx.vins[i], ['scriptSig']: p2pkhScriptSig(await signp2pkhWith(htmlcoinTx, i, signer), publicKey.split("0x")[1]) });
         }
-        qtumTx.vins = updatedVins;
+        htmlcoinTx.vins = updatedVins;
         // Build the serialized transaction string.
-        const serialized = txToBuffer(qtumTx).toString('hex');
+        const serialized = txToBuffer(htmlcoinTx).toString('hex');
         return { serializedTransaction: serialized, networkFee: "" };
     }
     else {
         // @ts-ignore
-        let localVouts = addp2pkhVouts(tx.to.split("0x")[1], amounts, new BigNumber(BigNumberEthers.from(tx.value).toNumber() + `e-8`).toFixed(7), tx.from.split("0x")[1], qtumTx.vins);
+        let localVouts = addp2pkhVouts(tx.to.split("0x")[1], amounts, new BigNumber(BigNumberEthers.from(tx.value).toNumber() + `e-8`).toFixed(7), tx.from.split("0x")[1], htmlcoinTx.vins);
         if (typeof localVouts === 'string') {
             return { serializedTransaction: "", networkFee: localVouts };
         }
         else {
-            qtumTx.vouts = localVouts;
+            htmlcoinTx.vouts = localVouts;
             // Sign necessary vins
             const updatedVins = [];
-            for (let i = 0; i < qtumTx.vins.length; i++) {
-                updatedVins.push({ ...qtumTx.vins[i], ['scriptSig']: p2pkhScriptSig(await signp2pkhWith(qtumTx, i, signer), publicKey.split("0x")[1]) });
+            for (let i = 0; i < htmlcoinTx.vins.length; i++) {
+                updatedVins.push({ ...htmlcoinTx.vins[i], ['scriptSig']: p2pkhScriptSig(await signp2pkhWith(htmlcoinTx, i, signer), publicKey.split("0x")[1]) });
             }
-            qtumTx.vins = updatedVins;
+            htmlcoinTx.vins = updatedVins;
             // Build the serialized transaction string.
-            const serialized = txToBuffer(qtumTx).toString('hex');
+            const serialized = txToBuffer(htmlcoinTx).toString('hex');
             return { serializedTransaction: serialized, networkFee: "" };
         }
     }
