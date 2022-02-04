@@ -4,7 +4,7 @@ import {
   } from "ethers/lib/utils";
 import { parseSignedTransaction } from "./helpers/utils";
 
-export class QtumProvider extends providers.JsonRpcProvider {
+export class HtmlcoinProvider extends providers.JsonRpcProvider {
   constructor(
     url?: ConnectionInfo | string,
     network?: providers.Networkish
@@ -13,7 +13,7 @@ export class QtumProvider extends providers.JsonRpcProvider {
   }
 
   /**
-   * Override for QTUM parsing of transaction
+   * Override for HTMLCOIN parsing of transaction
    * https://github.com/ethers-io/ethers.js/blob/master/packages/providers/src.ts/base-provider.ts
    */
   async sendTransaction(
@@ -43,7 +43,7 @@ export class QtumProvider extends providers.JsonRpcProvider {
   async getUtxos(from?: string, neededAmount?: number) {
     await this.getNetwork();
     const params = [from, neededAmount, "p2pkh"];
-    return await this.perform("qtum_qetUTXOs", params);
+    return await this.perform("htmlcoin_qetUTXOs", params);
   }
 
   /**
@@ -51,8 +51,8 @@ export class QtumProvider extends providers.JsonRpcProvider {
    * prepareRequest in https://github.com/ethers-io/ethers.js/blob/master/packages/providers/src.ts/json-rpc-provider.ts
    */
   prepareRequest(method: any, params: any): [string, Array<any>] {
-    if (method === "qtum_qetUTXOs") {
-      return ["qtum_getUTXOs", params];
+    if (method === "htmlcoin_qetUTXOs") {
+      return ["htmlcoin_getUTXOs", params];
     }
     return super.prepareRequest(method, params);
   }
