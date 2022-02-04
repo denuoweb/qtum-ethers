@@ -17,19 +17,19 @@ import { randomBytes } from "@ethersproject/random";
 import { keccak256 } from "@ethersproject/keccak256";
 import { Wordlist } from "@ethersproject/wordlists";
 
-const logger = new Logger("QtumWallet");
+const logger = new Logger("HtmlcoinWallet");
 const forwardErrors = [
     Logger.errors.INSUFFICIENT_FUNDS
 ];
 
-// Qtum core wallet and electrum use coin 88
-export const QTUM_BIP44_PATH = "m/44'/88'/0'/0/0";
-// Other wallets use coin 2301
+// Htmlcoin core wallet and electrum use coin 88
+export const HTMLCOIN_BIP44_PATH = "m/44'/88'/0'/0/0";
+// Other wallets use coin 172
 // for more details, see: https://github.com/satoshilabs/slips/pull/196
-export const SLIP_BIP44_PATH = "m/44'/2301'/0'/0/0";
+export const SLIP_BIP44_PATH = "m/44'/172'/0'/0/0";
 export const defaultPath = SLIP_BIP44_PATH;
 
-export class QtumWallet extends IntermediateWallet {
+export class HtmlcoinWallet extends IntermediateWallet {
 
     constructor(privateKey: any, provider?: any) {
         super(privateKey, provider);
@@ -40,7 +40,7 @@ export class QtumWallet extends IntermediateWallet {
     }
 
     /**
-     * Override to build a raw QTUM transaction signing UTXO's
+     * Override to build a raw HTMLCOIN transaction signing UTXO's
      */
     async signTransaction(transaction: TransactionRequest): Promise<string> {
         if (!transaction.gasPrice) {
@@ -61,10 +61,10 @@ export class QtumWallet extends IntermediateWallet {
         // Check if the transactionType matches the DEPLOY_ERROR, throw error else continue
         if (transactionType === GLOBAL_VARS.DEPLOY_ERROR) {
             return logger.throwError(
-                "You cannot send QTUM while deploying a contract. Try deploying again without a value.",
+                "You cannot send HTMLCOIN while deploying a contract. Try deploying again without a value.",
                 Logger.errors.NOT_IMPLEMENTED,
                 {
-                    error: "You cannot send QTUM while deploying a contract. Try deploying again without a value.",
+                    error: "You cannot send HTMLCOIN while deploying a contract. Try deploying again without a value.",
                 }
             );
         }
@@ -120,7 +120,7 @@ export class QtumWallet extends IntermediateWallet {
     }
 
     connect(provider: Provider): IntermediateWallet {
-        return new QtumWallet(this, provider);
+        return new HtmlcoinWallet(this, provider);
     }
 
     /**
@@ -136,32 +136,32 @@ export class QtumWallet extends IntermediateWallet {
         }
 
         const mnemonic = entropyToMnemonic(entropy, options.locale);
-        return QtumWallet.fromMnemonic(mnemonic, options.path, options.locale);
+        return HtmlcoinWallet.fromMnemonic(mnemonic, options.path, options.locale);
     }
 
     static fromEncryptedJson(json: string, password: Bytes | string, progressCallback?: ProgressCallback): Promise<IntermediateWallet> {
         return decryptJsonWallet(json, password, progressCallback).then((account) => {
-            return new QtumWallet(account);
+            return new HtmlcoinWallet(account);
         });
     }
 
     static fromEncryptedJsonSync(json: string, password: Bytes | string): IntermediateWallet {
-        return new QtumWallet(decryptJsonWalletSync(json, password));
+        return new HtmlcoinWallet(decryptJsonWalletSync(json, password));
     }
 
     /**
-     * Create a QtumWallet from a BIP44 mnemonic
+     * Create a HtmlcoinWallet from a BIP44 mnemonic
      * @param mnemonic
-     * @param path QTUM uses two different derivation paths and recommends SLIP_BIP44_PATH for external wallets, core wallets use QTUM_BIP44_PATH
+     * @param path HTMLCOIN uses two different derivation paths and recommends SLIP_BIP44_PATH for external wallets, core wallets use HTMLCOIN_BIP44_PATH
      * @param wordlist
      * @returns
      */
     static fromMnemonic(mnemonic: string, path?: string, wordlist?: Wordlist): IntermediateWallet {
         if (!path) { path = defaultPath; }
         const hdnode = HDNode.fromMnemonic(mnemonic, "", wordlist).derivePath(path)
-        // QTUM computes address from the public key differently than ethereum, ethereum uses keccak256 while QTUM uses ripemd160(sha256(compressedPublicKey))
+        // HTMLCOIN computes address from the public key differently than ethereum, ethereum uses keccak256 while HTMLCOIN uses ripemd160(sha256(compressedPublicKey))
         // @ts-ignore
-        defineReadOnly(hdnode, "qtumAddress", computeAddress(hdnode.publicKey, true));
-        return new QtumWallet(hdnode);
+        defineReadOnly(hdnode, "htmlcoinAddress", computeAddress(hdnode.publicKey, true));
+        return new HtmlcoinWallet(hdnode);
     }
 }
