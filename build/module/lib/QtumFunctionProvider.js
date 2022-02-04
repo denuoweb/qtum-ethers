@@ -1,5 +1,5 @@
-import { QtumProvider } from "./QtumProvider";
-export class QtumFunctionProvider extends QtumProvider {
+import { HtmlcoinProvider } from "./HtmlcoinProvider";
+export class HtmlcoinFunctionProvider extends HtmlcoinProvider {
     constructor(fn) {
         super();
         this.fn = fn;
