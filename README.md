@@ -1,13 +1,5 @@
 # Htmlcoin Ethers
 A module for using Htmlcoin through an Ethers compliant library to make it simpler to use Htmlcoin
-
-# Upgrading from 0.0.3
-public key address generation now follows HTMLCOIN behavior, the same private keys will now generate different addresses
-
-adds support for importing WIF private keys
-
-gas price is now specified in WEI, not Satoshis
-
 # Installation
 
 Open a console and run 
