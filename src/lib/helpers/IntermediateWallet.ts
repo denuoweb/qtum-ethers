@@ -46,9 +46,9 @@ export class IntermediateWallet extends Signer implements ExternallyOwnedAccount
             defineReadOnly(this, "_signingKey", () => signingKey);
             defineReadOnly(this, "address", computeAddress(this.publicKey, true));
 
-            if (getAddress(this.address) !== getAddress(privateKey.qtumAddress || privateKey.address)) {
-                if (getAddress(computeEthereumAddress(this.publicKey)) === getAddress(privateKey.qtumAddress || privateKey.address)) {
-                    logger.throwArgumentError("privateKey/address mismatch: Your address is being generated the ethereum way, please use QTUM address generation scheme", "privateKey", "[REDACTED]");
+            if (getAddress(this.address) !== getAddress(privateKey.htmlcoinAddress || privateKey.address)) {
+                if (getAddress(computeEthereumAddress(this.publicKey)) === getAddress(privateKey.htmlcoinAddress || privateKey.address)) {
+                    logger.throwArgumentError("privateKey/address mismatch: Your address is being generated the ethereum way, please use HTMLCOIN address generation scheme", "privateKey", "[REDACTED]");
                 } else {
                     logger.throwArgumentError("privateKey/address mismatch", "privateKey", "[REDACTED]");
                 }
