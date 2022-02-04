@@ -1,6 +1,6 @@
-import { QtumProvider } from "./QtumProvider";
+import { HtmlcoinProvider } from "./HtmlcoinProvider";
 
-export class QtumFunctionProvider extends QtumProvider {
+export class HtmlcoinFunctionProvider extends HtmlcoinProvider {
 
     readonly fn: Function
 
